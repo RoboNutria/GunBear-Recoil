@@ -29,7 +29,7 @@ public class EnemySpawnerComponent implements Component {
     public EnemyMovementType enemyMoveType = EnemyMovementType.LinearVelocity;
     public Vector2 pointA;
     public Vector2 pointB;
-    public float enemySpeed = 0.5f;
+    public float enemySpeed = 0.25f;
     public int enemyHP = 3;
 
     public float timer = 0;

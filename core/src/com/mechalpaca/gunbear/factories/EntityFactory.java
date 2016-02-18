@@ -132,10 +132,10 @@ public class EntityFactory {
         bc.body = Box2DFactory.createBody(world, 1, BodyDef.BodyType.DynamicBody, new Vector2(pos.x, pos.y), 0, 4f);
         bc.body.setFixedRotation(true);
         Fixture fixture = Box2DFactory.makeCircleFixture(PPM, ec.radius, 0.5f, 2, bc.body);
-        // TODO: Collision filtering
-        //Filter filter = new Filter();
-        //filter.groupIndex = CollisionSystem.ENEMY_GROUP;
-        //fixture.setFilterData(filter);
+        // TODO: Collision filtering - is this ok?
+        Filter filter = new Filter();
+        filter.groupIndex = CollisionSystem.ENEMY_GROUP;
+        fixture.setFilterData(filter);
 
 
         Box2DSpriteComponent b2sc = new Box2DSpriteComponent();
@@ -164,8 +164,6 @@ public class EntityFactory {
             bfc.speed = esc.enemySpeed;
             e.add(bfc);
         }
-
-        System.out.println("create");
 
         e.add(b2sc);
         e.add(ec);

@@ -3,6 +3,7 @@ package com.mechalpaca.gunbear.systems;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntitySystem;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mechalpaca.gunbear.components.EnemySpawnerComponent;
@@ -53,14 +54,30 @@ public class LevelCycleSystem extends EntitySystem {
 
     private EnemySpawnerComponent getNewSpawner() {
         EnemySpawnerComponent esc = new EnemySpawnerComponent();
+
+        // TODO: Randomize this too
         esc.enemyMovementType = EnemySpawnerComponent.EnemyMovementType.LinearVelocity;
-        esc.pointA = new Vector2(-worldView.getWorldWidth()/2f, worldView.getWorldHeight()/2f);
-        esc.pointB = new Vector2(-worldView.getWorldWidth()/2f, -worldView.getWorldHeight()/2f);
-        esc.spawnType = EnemySpawnerComponent.SpawnType.RandomY;
+
+        esc.spawnType = getRandomSpawnType();
+
+        if(esc.spawnType == EnemySpawnerComponent.SpawnType.RandomY) {
+            if(MathUtils.randomBoolean() == true) {
+                esc.pointA = new Vector2(worldView.getWorldWidth()/2f, (worldView.getWorldHeight()/2f)-0.02f);
+                esc.pointB = new Vector2(worldView.getWorldWidth()/2f, (-worldView.getWorldHeight()/2f)+0.02f);
+            } else {
+                esc.pointA = new Vector2(-worldView.getWorldWidth()/2f, (worldView.getWorldHeight()/2f)-0.02f);
+                esc.pointB = new Vector2(-worldView.getWorldWidth()/2f, (-worldView.getWorldHeight()/2f)+0.02f);
+            }
+        }
+        esc.lifeSpan = -1;
         esc.spawnDelay = 0.5f;
-        esc.enemiesToSpawn = 8;
-        esc.enemySpeed = 1f;
+        esc.enemiesToSpawn = 5;
+        esc.enemySpeed = 0.5f;
         return esc;
     }
 
+    public EnemySpawnerComponent.SpawnType getRandomSpawnType() {
+        // TODO: Make it random not just RandomY
+        return EnemySpawnerComponent.SpawnType.RandomY;
+    }
 }

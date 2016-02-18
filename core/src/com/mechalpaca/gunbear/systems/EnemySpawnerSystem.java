@@ -35,7 +35,6 @@ public class EnemySpawnerSystem extends EntitySystem {
             checkIsKill(esc);
             if(esc.isKill) {
                 getEngine().removeEntity(entity);
-                System.out.println("KILL");
                 continue;
             }
             esc.timer += deltaTime;
@@ -54,8 +53,8 @@ public class EnemySpawnerSystem extends EntitySystem {
     private void createEnemy(EnemySpawnerComponent esc, BodyComponent bc) {
         if(esc.spawnTimer < esc.spawnDelay) return;
         if(esc.enemiesToSpawn != -1) {
-            esc.enemiesToSpawn--;
             if(esc.enemiesToSpawn <= 0) return;
+            esc.enemiesToSpawn--;
         }
         esc.spawnTimer = 0;
         getEngine().addEntity(EntityFactory.createEnemy(physicsSystem.world, esc, bc));
