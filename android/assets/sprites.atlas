@@ -1,0 +1,54 @@
+
+sprites.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+ass-stars
+  rotate: false
+  xy: 1, 20
+  size: 192, 128
+  orig: 192, 128
+  offset: 0, 0
+  index: -1
+pattern-bkg-1
+  rotate: false
+  xy: 1, 1
+  size: 2, 17
+  orig: 2, 17
+  offset: 0, 0
+  index: -1
+enemy-chobi-1
+  rotate: false
+  xy: 195, 140
+  size: 8, 8
+  orig: 8, 8
+  offset: 0, 0
+  index: -1
+chobi-bear
+  rotate: false
+  xy: 5, 10
+  size: 8, 8
+  orig: 8, 8
+  offset: 0, 0
+  index: -1
+enemy-chobi-2
+  rotate: false
+  xy: 195, 130
+  size: 8, 8
+  orig: 8, 8
+  offset: 0, 0
+  index: -1
+bullet-1
+  rotate: false
+  xy: 205, 142
+  size: 6, 6
+  orig: 6, 6
+  offset: 0, 0
+  index: -1
+bullet-2
+  rotate: false
+  xy: 5, 2
+  size: 6, 6
+  orig: 6, 6
+  offset: 0, 0
+  index: -1
