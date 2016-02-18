@@ -39,8 +39,10 @@ public class GunSystem extends EntitySystem {
 				case Player:
 					if(gc.playerWantsToFire) {
 						if(pc == null) pc = pm.get(entity);
-						firePlayerGun(pc, bc, gc);
-						pc.state = PlayerComponent.PlayerState.Recoil;
+						if(pc.state == PlayerComponent.PlayerState.Normal) {
+							firePlayerGun(pc, bc, gc);
+							pc.state = PlayerComponent.PlayerState.Recoil;
+						}
 					}
 					break;
 				case Enemy:

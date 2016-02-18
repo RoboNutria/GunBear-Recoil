@@ -2,6 +2,9 @@ package com.mechalpaca.gunbear.systems;
 
 import com.badlogic.ashley.core.*;
 import com.badlogic.ashley.utils.ImmutableArray;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Body;
 import com.mechalpaca.gunbear.GameConfig;
 import com.mechalpaca.gunbear.components.*;
 
@@ -15,6 +18,9 @@ public class PlayerSystem extends EntitySystem {
     private ComponentMapper<GunComponent> gm = ComponentMapper.getFor(GunComponent.class);
     private ComponentMapper<BoundsComponent> bom = ComponentMapper.getFor(BoundsComponent.class); // stupid naming...
 
+    private float playerHitTimer = 0;
+    private float playerInvincibleDelay = 1.5f;
+
     @Override
     public void addedToEngine(Engine engine) {
         playerEntities = engine.getEntitiesFor(Family.all(PlayerComponent.class).get());
@@ -26,10 +32,45 @@ public class PlayerSystem extends EntitySystem {
             PlayerComponent pc = pm.get(entity);
             BoundsComponent boc = bom.get(entity);
     		BodyComponent bc = bm.get(entity);
+            checkPlayerWasHit(entity, pc, bc, deltaTime);
             checkPlayerDirection(entity, pc);
     		checkPlayerOutOfBounds(pc, boc, bc);
             checkPlayerRecoil(entity, pc, bc);
     	}
+    }
+
+    private void checkPlayerWasHit(Entity entity, PlayerComponent pc, BodyComponent bc, float deltaTime) {
+        if(pc.state == PlayerComponent.PlayerState.Hit) {
+            if(b2sc == null)
+                b2sc = b2sm.get(entity);
+            b2sc.box2DSprite.setColor(Color.RED);
+            pc.canFire = false;
+            pc.canMove = false;
+
+            float forceX = 0;
+            float forceY = 0;
+            Body enemyBody = pc.bodyHitBy;
+            if(bc.body.getPosition().y <= enemyBody.getPosition().y) forceY = -pc.hitBackForce;
+            if(bc.body.getPosition().y >= enemyBody.getPosition().y) forceY = pc.hitBackForce;
+            if(bc.body.getPosition().x <= enemyBody.getPosition().x) forceX = -pc.hitBackForce;
+            if(bc.body.getPosition().x >= enemyBody.getPosition().x) forceX = pc.hitBackForce;
+            bc.body.applyForceToCenter(forceX, forceY, true);
+
+            pc.state = PlayerComponent.PlayerState.Recuperating;
+        } else if(pc.state == PlayerComponent.PlayerState.Recuperating) {
+            playerHitTimer += deltaTime;
+            if(playerHitTimer >= playerInvincibleDelay/2f) {
+                b2sc.box2DSprite.setColor(Color.YELLOW);
+                b2sc.box2DSprite.setColor(1, 1, 1, 0.5f);
+                pc.canFire = true;
+                pc.canMove = true;
+            }
+            if(playerHitTimer >= playerInvincibleDelay) {
+                b2sc.box2DSprite.setColor(1, 1, 1, 1);
+                playerHitTimer = 0;
+                pc.state = PlayerComponent.PlayerState.Normal;
+            }
+        }
     }
 
     private void checkPlayerDirection(Entity entity, PlayerComponent pc) {

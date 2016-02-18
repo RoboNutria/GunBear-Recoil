@@ -34,17 +34,25 @@ public class CollisionSystem extends EntitySystem implements ContactListener {
 
         for (Entity sprite : box2DSprites) {
             Box2DSpriteComponent c = b2sc.get(sprite);
-            if(fa.getUserData().equals(c)) entityA = sprite;
-            else if(fb.getUserData().equals(c)) entityB = sprite;
-            if(entityA != null && entityB != null) break;
+            if (fa.getUserData().equals(c)) entityA = sprite;
+            else if (fb.getUserData().equals(c)) entityB = sprite;
+            if (entityA != null && entityB != null) break;
         }
-        // collision between bullet and enemy
         BulletComponent bulletComponent;
         EnemyComponent enemyComponent;
+        PlayerComponent playerComponent;
+        BodyComponent bodyComponent;
+        // collision between bullet and enemy
         if ((bulletComponent = boc.get(entityA)) != null && (enemyComponent = ec.get(entityB)) != null) {
             handleBulletEnemyCollision(bulletComponent, enemyComponent);
         } else if ((bulletComponent = boc.get(entityB)) != null && (enemyComponent = ec.get(entityA)) != null) {
             handleBulletEnemyCollision(bulletComponent, enemyComponent);
+        } else if ((playerComponent = pc.get(entityA)) != null && (enemyComponent = ec.get(entityB)) != null) {
+            bodyComponent = bc.get(entityB);
+            handlePlayerEnemyCollision(playerComponent, bodyComponent);
+        } else if ((playerComponent = pc.get(entityB)) != null && (enemyComponent = ec.get(entityA)) != null) {
+            bodyComponent = bc.get(entityA);
+            handlePlayerEnemyCollision(playerComponent, bodyComponent);
         }
     }
 
@@ -54,6 +62,12 @@ public class CollisionSystem extends EntitySystem implements ContactListener {
         bulletComponent.destroy = true;
     }
 
+    private void handlePlayerEnemyCollision(PlayerComponent playerComponent, BodyComponent bodyComponent) {
+        if(playerComponent.state == PlayerComponent.PlayerState.Recuperating) return;
+        playerComponent.state = PlayerComponent.PlayerState.Hit;
+        playerComponent.bodyHitBy = bodyComponent.body;
+    }
+
     @Override
     public void endContact(Contact contact) {
 
@@ -61,11 +75,31 @@ public class CollisionSystem extends EntitySystem implements ContactListener {
 
     @Override
     public void preSolve(Contact contact, Manifold oldManifold) {
+        Fixture fixtureA = contact.getFixtureA();
+        Fixture fixtureB = contact.getFixtureB();
+        Entity entityA = null;
+        Entity entityB = null;
 
+        for (Entity sprite : box2DSprites) {
+            Box2DSpriteComponent c = b2sc.get(sprite);
+            if (fixtureA.getUserData().equals(c)) entityA = sprite;
+            else if (fixtureB.getUserData().equals(c)) entityB = sprite;
+            if (entityA != null && entityB != null) break;
+        }
+        BulletComponent bulletComponent;
+        EnemyComponent enemyComponent;
+        PlayerComponent playerComponent;
+        BodyComponent bodyComponent;
+        if ((playerComponent = pc.get(entityA)) != null && (enemyComponent = ec.get(entityB)) != null) {
+            contact.setEnabled(false);
+        } else if ((playerComponent = pc.get(entityB)) != null && (enemyComponent = ec.get(entityA)) != null) {
+            contact.setEnabled(false);
+        }
     }
 
     @Override
     public void postSolve(Contact contact, ContactImpulse impulse) {
 
     }
+
 }

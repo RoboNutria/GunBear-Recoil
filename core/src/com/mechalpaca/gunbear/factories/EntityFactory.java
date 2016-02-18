@@ -85,9 +85,9 @@ public class EntityFactory {
 
         BodyComponent bc = new BodyComponent();
         bc.body = Box2DFactory.createBody(world, 1, BodyDef.BodyType.DynamicBody, new Vector2(x, y), angle, 0);
-        bc.body.setBullet(true);
+        bc.body.setBullet(false);
         Fixture fixture = Box2DFactory.makeCircleFixture(PPM, bulletRadius, 1, 0, bc.body);
-        fixture.setSensor(true);
+        fixture.setSensor(false);
         Filter filter = new Filter();
         filter.groupIndex = CollisionSystem.PLAYER_GROUP;
         fixture.setFilterData(filter);
@@ -131,7 +131,7 @@ public class EntityFactory {
         Vector2 pos = esc.getNextEnemyPos();
         bc.body = Box2DFactory.createBody(world, 1, BodyDef.BodyType.DynamicBody, new Vector2(pos.x, pos.y), 0, 4f);
         bc.body.setFixedRotation(true);
-        Fixture fixture = Box2DFactory.makeCircleFixture(PPM, ec.radius, 0.5f, 0, bc.body);
+        Fixture fixture = Box2DFactory.makeCircleFixture(PPM, ec.radius, 0.5f, 2, bc.body);
         // TODO: Collision filtering
         //Filter filter = new Filter();
         //filter.groupIndex = CollisionSystem.ENEMY_GROUP;

@@ -32,10 +32,12 @@ public class InputSystem extends EntitySystem {
             BodyComponent bc = bm.get(entity);
             PlayerComponent pc = pm.get(entity);
 
-            handleInputMovement(pc, bc);
-            handleDirectionChange(pc, bc);
+            if(pc.canMove) {
+                handleInputMovement(pc, bc);
+                handleDirectionChange(pc, bc);
+            }
             GunComponent gc = gm.get(entity);
-            if(gc != null) {
+            if(gc != null && pc.canFire) {
                 checkFireInput(gc);
             }
         }
