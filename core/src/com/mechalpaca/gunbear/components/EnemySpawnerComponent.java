@@ -30,7 +30,7 @@ public class EnemySpawnerComponent implements Component {
     public Vector2 pointA;
     public Vector2 pointB;
     public float enemySpeed = 1f;
-    public float enemyHP = 5f;
+    public int enemyHP = 1;
 
     public float timer = 0;
     public float spawnTimer = 0;

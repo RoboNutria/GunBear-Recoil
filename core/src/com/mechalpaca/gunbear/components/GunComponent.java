@@ -11,7 +11,7 @@ public class GunComponent implements Component {
 
 	public GunType type;
 	public float recoilPower = 0.5f;
-	public float hitPower = 1f;
+	public int hitPower = 1;
 	public float bulletSpeed = 5f;
 	public float shotTimer = 0;
 	public float waitTime; // min time between shots

@@ -41,6 +41,7 @@ public class LevelScreen implements Screen {
 		EnemySpawnerSystem enemySpawnerSystem = new EnemySpawnerSystem();
 		MovementSystem movementSystem = new MovementSystem();
 		CollisionSystem collisionSystem = new CollisionSystem();
+		EnemySystem enemySystem = new EnemySystem();
 
 		physicsSystem.world.setContactListener(collisionSystem);
 
@@ -55,6 +56,7 @@ public class LevelScreen implements Screen {
 		engine.addSystem(enemySpawnerSystem);
 		engine.addSystem(movementSystem);
 		engine.addSystem(collisionSystem);
+		engine.addSystem(enemySystem);
 
 		// add entity listeners
 		Family bodyFamily = Family.all(BodyComponent.class).get();

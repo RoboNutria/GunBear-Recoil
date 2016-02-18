@@ -12,7 +12,7 @@ public class BulletComponent implements Component {
     }
 
     public float speed;
-    public float hitPower;
+    public int hitPower;
     public boolean isPlayer;
     public BulletType type;
     public boolean destroy = false;

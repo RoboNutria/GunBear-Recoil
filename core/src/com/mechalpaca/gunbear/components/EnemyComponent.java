@@ -7,6 +7,7 @@ import com.badlogic.ashley.core.Component;
  */
 public class EnemyComponent implements Component {
     public float radius = 2f;
-    public float hp = 5f;
+    public int hp = 1;
     public boolean wasHit = false;
+    public boolean isDead = false;
 }

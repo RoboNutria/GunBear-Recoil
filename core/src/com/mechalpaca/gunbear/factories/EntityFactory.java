@@ -45,7 +45,7 @@ public class EntityFactory {
         GunComponent gc = new GunComponent();
         gc.type = GunType.Player;
         gc.waitTime = 0.25f;
-        gc.hitPower = 1f;
+        gc.hitPower = 1;
         gc.bulletSpeed = 2f;
         gc.recoilPower = 0.35f;
 
