@@ -1,5 +1,6 @@
 package com.mechalpaca.gunbear.utils;
 
+import java.rmi.UnexpectedException;
 import java.util.HashMap;
 
 import com.badlogic.gdx.Gdx;
@@ -10,6 +11,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.utils.Array;
 
 /**
@@ -22,6 +24,7 @@ public class Assets {
 	private static HashMap<String, Texture> texturesMap = new HashMap<String, Texture>();
 	private static HashMap<String, Sound> soundMap = new HashMap<String, Sound>();
 	private static HashMap<String, Music> musicMap = new HashMap<String, Music>();
+	private static HashMap<String, ShaderProgram> shadersMap = new HashMap<String, ShaderProgram>();
 
 	private static float musicVolume = 1f;
 	private static float soundVolume = 0.8f;
@@ -73,7 +76,19 @@ public class Assets {
 		texturesMap.put(filename, texture);
 		return texture;
 	}
-	
+
+	public static ShaderProgram loadShader(String name, String vertexFile, String fragmentFile) throws UnexpectedException {
+		if(shadersMap.containsKey(name)) {
+			return shadersMap.get(name);
+		}
+		String vertexShader = Gdx.files.internal(vertexFile).readString();
+		String fragmentShader = Gdx.files.internal(fragmentFile).readString();
+		ShaderProgram shaderProgram = new ShaderProgram(vertexShader, fragmentShader);
+		if(!shaderProgram.isCompiled()) throw new UnexpectedException("Shader failed to compile!");
+		shadersMap.put(name, shaderProgram);
+		return shaderProgram;
+	}
+
 	public static Music loadMusic(String filename) {
 		if(musicMap.containsKey(filename)) return musicMap.get(filename);
 		FileHandle musicFile = Gdx.files.internal(filename);
@@ -219,11 +234,16 @@ public class Assets {
 		return musicMap.get(filename);
 	}
 
+	public static ShaderProgram getShader(String name) {
+		return shadersMap.get(name);
+	}
+
 	public static void dispose() {
 		disposeAtlasMap();
 		disposeTexturesMap();
 		disposeSoundMap();
 		disposeMusicMap();
+		disposeShadersMap();
 	}
 
 	private static void disposeAtlasMap() {
@@ -233,7 +253,6 @@ public class Assets {
 			}
 		}
 		atlasMap.clear();
-		atlasMap = null;
 	}
 
 	public static void disposeTexturesMap() {
@@ -253,7 +272,6 @@ public class Assets {
 			}
 		}
 		soundMap.clear();
-		soundMap = null;
 	}
 
 	public static void disposeMusicMap() {
@@ -263,9 +281,17 @@ public class Assets {
 			}
 		}
 		musicMap.clear();
-		musicMap = null;
 	}
-	
+
+	public static void disposeShadersMap() {
+		if(shadersMap.size() > 0) {
+			for(ShaderProgram s : shadersMap.values()) {
+				s.dispose();
+			}
+		}
+		shadersMap.clear();
+	}
+
 	public static void disposeAtlas(String filename) {
 		TextureAtlas atlas = atlasMap.get(filename);
 		if(atlas == null) return;
@@ -284,6 +310,12 @@ public class Assets {
 		if(sound == null) return;
 		sound.stop();
 		sound.dispose();
+	}
+
+	public static void disposeShader(String name) {
+		ShaderProgram shader = shadersMap.get(name);
+		if(shader == null) return;
+		shader.dispose();
 	}
 
 }

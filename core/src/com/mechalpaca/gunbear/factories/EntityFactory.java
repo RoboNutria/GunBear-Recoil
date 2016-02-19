@@ -54,6 +54,9 @@ public class EntityFactory {
         pc.friction = 0.02f;
         pc.radius = playerRegion.getRegionWidth()/2;
 
+        MaterialComponent mc = new MaterialComponent();
+        mc.shaderProgram = Assets.getShader(GunBearRecoil.APESHIT_GLSL);
+
         BoundsComponent boc = new BoundsComponent();
         boc.bounds = bounds;
 
@@ -75,6 +78,7 @@ public class EntityFactory {
         entity.add(boc);
         entity.add(pc);
         entity.add(gc);
+        entity.add(mc);
         return entity;
     }
 

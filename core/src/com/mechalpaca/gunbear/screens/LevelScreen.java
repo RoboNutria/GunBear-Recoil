@@ -3,7 +3,9 @@ package com.mechalpaca.gunbear.screens;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.core.Family;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.physics.box2d.World;
 import com.mechalpaca.gunbear.GameConfig;
 import com.mechalpaca.gunbear.GunBearRecoil;
@@ -65,6 +67,12 @@ public class LevelScreen implements Screen {
 		// add the entities
 		World world = engine.getSystem(PhysicsSystem.class).world;
 		engine.addEntity(EntityFactory.createGunBear(world, 0, 0, engine.getSystem(RenderSystem.class).worldView));
+
+		// load shaders
+		loadShaders();
+	}
+
+	private void loadShaders() {
 	}
 
 	@Override
