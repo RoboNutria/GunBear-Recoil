@@ -36,16 +36,11 @@ public class GunBearRecoil extends Game {
 	public void create () {
 		// load assets and shader programs, set user data accessor for dermetfan's box2d sprite cuz we want components
 		Assets.loadAtlas(GunBearRecoil.SPRITE_ATLAS_FILE, true);
-		try {
-			Assets.loadShader(GRAYSCALE_GLSL, GRAYSCALE_VERTEX, GRAYSCALE_FRAGMENT);
-			Assets.loadShader(APESHIT_GLSL, APESHIT_VERTEX, APESHIT_FRAGMENT);
-			Assets.loadShader(EARTHQUAKE_GLSL, EARTHQUAKE_VERTEX, EARTHQUAKE_FRAGMENT);
-		} catch (UnexpectedException e) {
-			dispose();
-			return;
-		}
-		//Assets.loadMusic(GAME_MUSIC_FILE);
-		//Assets.playMusic(GAME_MUSIC_FILE);
+		//Assets.loadShader(GRAYSCALE_GLSL, GRAYSCALE_VERTEX, GRAYSCALE_FRAGMENT);
+		//Assets.loadShader(APESHIT_GLSL, APESHIT_VERTEX, APESHIT_FRAGMENT);
+		//Assets.loadShader(EARTHQUAKE_GLSL, EARTHQUAKE_VERTEX, EARTHQUAKE_FRAGMENT);
+		Assets.loadMusic(GAME_MUSIC_FILE);
+		Assets.playMusic(GAME_MUSIC_FILE);
 		Box2DSprite.setUserDataAccessor(new Function<Box2DSprite, Object>() {
 			@Override
 			public Box2DSprite apply(Object arg) {

@@ -3,10 +3,11 @@ package com.mechalpaca.gunbear.systems;
 import com.badlogic.ashley.core.*;
 import com.badlogic.ashley.utils.ImmutableArray;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
 import com.mechalpaca.gunbear.GameConfig;
 import com.mechalpaca.gunbear.components.*;
+import com.mechalpaca.gunbear.gui.Hud;
 
 public class PlayerSystem extends EntitySystem {
 
@@ -20,6 +21,7 @@ public class PlayerSystem extends EntitySystem {
 
     private float playerHitTimer = 0;
     private float playerInvincibleDelay = 1.5f;
+    public Hud hud;
 
     @Override
     public void addedToEngine(Engine engine) {
@@ -46,6 +48,16 @@ public class PlayerSystem extends EntitySystem {
             b2sc.box2DSprite.setColor(Color.RED);
             pc.canFire = false;
             pc.canMove = false;
+
+            ProgressBar hpBar = hud.hpBar;
+            hpBar.setValue(hpBar.getValue() - pc.hpDamage);
+            if(hpBar.getValue() <= 0) {
+                if(hud.playerLives <= 0) {
+                    System.out.println("Game Over");
+                    // TODO: Do something, animation + restart game
+                }
+                hud.removeCredit();
+            }
 
             float forceX = 0;
             float forceY = 0;

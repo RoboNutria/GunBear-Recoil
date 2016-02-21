@@ -15,12 +15,12 @@ public class PlayerComponent implements Component {
         Recuperating
     }
 
-    public short lives = 3;
     public int xDir = 1;
     public float speed = 5f;
     public float friction = 0.02f;
     public float hitBackForce = 0.3f;
     public Body bodyHitBy = null;
+    public float hpDamage = 1f;
     public float radius;
     public boolean canMove = true;
     public boolean canFire = true;

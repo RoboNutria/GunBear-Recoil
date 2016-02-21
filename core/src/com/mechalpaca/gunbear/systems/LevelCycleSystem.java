@@ -1,24 +1,25 @@
 package com.mechalpaca.gunbear.systems;
 
-import com.badlogic.ashley.core.*;
-import com.badlogic.ashley.utils.ImmutableArray;
+import com.badlogic.ashley.core.Engine;
+import com.badlogic.ashley.core.Entity;
+import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.mechalpaca.gunbear.GameConfig;
 import com.mechalpaca.gunbear.components.BulletComponent;
 import com.mechalpaca.gunbear.components.EnemySpawnerComponent;
-import com.mechalpaca.gunbear.components.scene2d.ProgressBarComponent;
+import com.mechalpaca.gunbear.gui.Hud;
 
 /**
  * @author Diego Coppetti
  */
 public class LevelCycleSystem extends EntitySystem {
-    private ImmutableArray<Entity> entities;
-    private ProgressBarComponent pbc;
-    private ComponentMapper<ProgressBarComponent> pbm = ComponentMapper.getFor(ProgressBarComponent.class);
+
+    public Hud hud;
 
     public static final int MAX_LEVEL = 999;
+    public static boolean SPEED_UP_MODE = true;
     public int currentLevel = 1;
 
     // Timers
@@ -35,36 +36,28 @@ public class LevelCycleSystem extends EntitySystem {
 
     @Override
     public void addedToEngine(Engine engine) {
-        entities = engine.getEntitiesFor(Family.all(ProgressBarComponent.class).get());
         RenderSystem renderSystem = engine.getSystem(RenderSystem.class);
         worldView = renderSystem.worldView;
     }
 
     @Override
     public void update(float deltaTime) {
-        if(pbc == null) {
-            for(Entity e : entities) {
-                pbc = pbm.get(e);
-                if(e != null) break;
-            }
-        }
         updateLevel(deltaTime);
         updateTensionBar(deltaTime);
         createEnemySpawner(deltaTime);
     }
 
     private void updateTensionBar(float deltaTime) {
-        ProgressBar pb = pbc.progressBar;
         if(enemyHit) {
             // add progress
             enemyHit = false;
             float value = enemyKill == true ? tensionBarIncreaseRate * tensionBarEnemyKillMul : tensionBarIncreaseRate;
             enemyKill = false;
-            pb.setValue(pb.getValue() + value);
+            hud.tensionBar.setValue(hud.tensionBar.getValue() + value);
         } else {
             // decrease progress
-            if(pb.getPercent() > 0) {
-                pb.setValue(pb.getValue() - tensionBarIncreaseRate/tensionDivider);
+            if(hud.tensionBar.getPercent() > 0) {
+                hud.tensionBar.setValue(hud.tensionBar.getValue() - tensionBarIncreaseRate/tensionDivider);
             }
         }
     }
@@ -74,6 +67,10 @@ public class LevelCycleSystem extends EntitySystem {
         if(spawnTimer >= spawnDelay) {
             spawnTimer = 0;
             createSpawn = true;
+        }
+        if(SPEED_UP_MODE) {
+            float deltaMul = hud.tensionBar.getPercent() + 1;
+            GameConfig.SPEED_UP = deltaMul;
         }
     }
 

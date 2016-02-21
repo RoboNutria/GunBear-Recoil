@@ -77,14 +77,13 @@ public class Assets {
 		return texture;
 	}
 
-	public static ShaderProgram loadShader(String name, String vertexFile, String fragmentFile) throws UnexpectedException {
+	public static ShaderProgram loadShader(String name, String vertexFile, String fragmentFile) {
 		if(shadersMap.containsKey(name)) {
 			return shadersMap.get(name);
 		}
 		String vertexShader = Gdx.files.internal(vertexFile).readString();
 		String fragmentShader = Gdx.files.internal(fragmentFile).readString();
 		ShaderProgram shaderProgram = new ShaderProgram(vertexShader, fragmentShader);
-		if(!shaderProgram.isCompiled()) throw new UnexpectedException("Shader failed to compile!");
 		shadersMap.put(name, shaderProgram);
 		return shaderProgram;
 	}

@@ -21,6 +21,7 @@ import com.mechalpaca.gunbear.GunBearRecoil;
 import com.mechalpaca.gunbear.components.BodyComponent;
 import com.mechalpaca.gunbear.components.Box2DSpriteComponent;
 import com.mechalpaca.gunbear.components.MaterialComponent;
+import com.mechalpaca.gunbear.gui.Hud;
 import com.mechalpaca.gunbear.utils.Assets;
 import net.dermetfan.gdx.graphics.g2d.Box2DSprite;
 
@@ -43,7 +44,7 @@ public class RenderSystem extends EntitySystem {
     private TextureRegion background;
 
     public World world;
-    public Stage stage;
+    public Hud hud;
 
     public Color color = new Color(0, 0, 0.05f, 1);
 
@@ -67,6 +68,7 @@ public class RenderSystem extends EntitySystem {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         worldCamera.update();
+        worldView.apply();
         batch.setProjectionMatrix(worldCamera.combined);
         updateBackgroundShader(deltaTime);
         batch.begin();
@@ -84,7 +86,13 @@ public class RenderSystem extends EntitySystem {
             b2s.draw(batch, b);
             batch.setShader(null);
         }
-        if(stage != null) stage.draw();
+        if(hud.stage != null) {
+            OrthographicCamera guiCamera = (OrthographicCamera) hud.stage.getCamera();
+            hud.stage.getViewport().apply();
+            guiCamera.update();
+            batch.setProjectionMatrix(guiCamera.combined);
+            hud.stage.draw();
+        }
         batch.end();
         if(DEBUG_MODE) debugRenderer.render(world, worldCamera.combined);
     }
@@ -103,6 +111,7 @@ public class RenderSystem extends EntitySystem {
 
     public void resize(int width, int height) {
         worldView.update(width, height);
+        hud.stage.getViewport().update(width, height);
     }
 
     @Override
