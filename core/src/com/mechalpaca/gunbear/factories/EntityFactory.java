@@ -8,12 +8,15 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Filter;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mechalpaca.gunbear.GunBearRecoil;
 import com.mechalpaca.gunbear.components.*;
 import com.mechalpaca.gunbear.components.GunComponent.GunType;
 import com.mechalpaca.gunbear.components.movement.BodyFollowComponent;
+import com.mechalpaca.gunbear.components.scene2d.ProgressBarComponent;
 import com.mechalpaca.gunbear.screens.LevelScreen;
 import com.mechalpaca.gunbear.systems.CollisionSystem;
 import com.mechalpaca.gunbear.systems.RenderSystem;
@@ -54,9 +57,6 @@ public class EntityFactory {
         pc.friction = 0.02f;
         pc.radius = playerRegion.getRegionWidth()/2;
 
-        MaterialComponent mc = new MaterialComponent();
-        mc.shaderProgram = Assets.getShader(GunBearRecoil.APESHIT_GLSL);
-
         BoundsComponent boc = new BoundsComponent();
         boc.bounds = bounds;
 
@@ -78,7 +78,6 @@ public class EntityFactory {
         entity.add(boc);
         entity.add(pc);
         entity.add(gc);
-        entity.add(mc);
         return entity;
     }
 
@@ -174,4 +173,26 @@ public class EntityFactory {
         e.add(bc);
         return e;
     }
+
+    public static Entity createTensionBar(Stage stage, ProgressBar.ProgressBarStyle style) {
+        ProgressBarComponent pbc = new ProgressBarComponent();
+
+        float x = 20;
+        float y = stage.getViewport().getWorldHeight()/1.1f;
+        float width = 200;
+        float height = 100;
+        pbc.progressBar = new ProgressBar(0, 5, 0.001f, false, style);
+        pbc.progressBar.setPosition(x, y);
+        pbc.progressBar.setSize(width, height);
+        pbc.progressBar.setValue(0);
+        pbc.progressBar.setColor(1, 1, 1, 0.5f);
+
+        stage.addActor(pbc.progressBar);
+
+        Entity genericBarEntity = new Entity();
+        genericBarEntity.add(pbc);
+
+        return genericBarEntity;
+    }
+
 }

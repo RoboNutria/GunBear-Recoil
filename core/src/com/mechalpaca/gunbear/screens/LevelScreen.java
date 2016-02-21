@@ -5,18 +5,17 @@ import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.mechalpaca.gunbear.GameConfig;
-import com.mechalpaca.gunbear.GunBearRecoil;
 import com.mechalpaca.gunbear.components.BodyComponent;
-import com.mechalpaca.gunbear.components.Box2DSpriteComponent;
 import com.mechalpaca.gunbear.factories.EntityFactory;
 import com.mechalpaca.gunbear.listeners.BodyDisposeListener;
 import com.mechalpaca.gunbear.systems.*;
-import com.mechalpaca.gunbear.utils.Assets;
-import net.dermetfan.gdx.graphics.g2d.Box2DSprite;
-import net.dermetfan.utils.Function;
 
 import java.util.Iterator;
 
@@ -24,6 +23,9 @@ public class LevelScreen implements Screen {
 
 	public static Engine engine;
 	private float accumulator;
+
+	private Stage stage;
+	private Skin skin;
 
 	public LevelScreen() {
 		engine = new Engine();
@@ -68,11 +70,26 @@ public class LevelScreen implements Screen {
 		World world = engine.getSystem(PhysicsSystem.class).world;
 		engine.addEntity(EntityFactory.createGunBear(world, 0, 0, engine.getSystem(RenderSystem.class).worldView));
 
+
+		createHud();
+		renderSystem.stage = stage;
+
 		// load shaders
 		loadShaders();
 	}
 
 	private void loadShaders() {
+	}
+
+	private void createHud() {
+		stage = new Stage(new FitViewport(GameConfig.W_WIDTH, GameConfig.W_HEIGHT));
+		// I'm using a skin we already have, but I perfectly could use any texture region or take shit from an atlas
+		skin = new Skin(Gdx.files.internal("gui/uiskin.json"));
+		ProgressBar.ProgressBarStyle style = new ProgressBar.ProgressBarStyle();
+		style.background = new TextureRegionDrawable(skin.getRegion("textfield"));
+		style.knobBefore = new TextureRegionDrawable(skin.getRegion("white"));
+
+		engine.addEntity(EntityFactory.createTensionBar(stage, style));
 	}
 
 	@Override
@@ -81,6 +98,7 @@ public class LevelScreen implements Screen {
         accumulator += frameTime;
         while (accumulator >= GameConfig.GAME_STEP) {
         	engine.update(GameConfig.GAME_STEP);
+			stage.act(GameConfig.GAME_STEP);
             accumulator -= GameConfig.GAME_STEP;
         }
 	}
@@ -117,6 +135,8 @@ public class LevelScreen implements Screen {
 			system.setProcessing(false);
 			engine.removeSystem(system);
 		}
+		skin.dispose();
+		stage.dispose();
 	}
 
 }

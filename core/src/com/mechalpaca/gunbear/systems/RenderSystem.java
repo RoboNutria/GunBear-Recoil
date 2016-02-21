@@ -14,6 +14,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mechalpaca.gunbear.GunBearRecoil;
@@ -42,6 +43,7 @@ public class RenderSystem extends EntitySystem {
     private TextureRegion background;
 
     public World world;
+    public Stage stage;
 
     public Color color = new Color(0, 0, 0.05f, 1);
 
@@ -82,6 +84,7 @@ public class RenderSystem extends EntitySystem {
             b2s.draw(batch, b);
             batch.setShader(null);
         }
+        if(stage != null) stage.draw();
         batch.end();
         if(DEBUG_MODE) debugRenderer.render(world, worldCamera.combined);
     }

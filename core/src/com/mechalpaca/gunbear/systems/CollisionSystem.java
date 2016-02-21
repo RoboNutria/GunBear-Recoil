@@ -60,6 +60,11 @@ public class CollisionSystem extends EntitySystem implements ContactListener {
         enemyComponent.hp -= bulletComponent.hitPower;
         enemyComponent.wasHit = true;
         bulletComponent.destroy = true;
+        if(enemyComponent.hp <= 0) {
+            LevelCycleSystem.notifyHit(bulletComponent, true);
+        } else {
+            LevelCycleSystem.notifyHit(bulletComponent, false);
+        }
     }
 
     private void handlePlayerEnemyCollision(PlayerComponent playerComponent, BodyComponent bodyComponent) {

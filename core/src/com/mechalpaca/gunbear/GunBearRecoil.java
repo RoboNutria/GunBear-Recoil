@@ -44,8 +44,8 @@ public class GunBearRecoil extends Game {
 			dispose();
 			return;
 		}
-		Assets.loadMusic(GAME_MUSIC_FILE);
-		Assets.playMusic(GAME_MUSIC_FILE);
+		//Assets.loadMusic(GAME_MUSIC_FILE);
+		//Assets.playMusic(GAME_MUSIC_FILE);
 		Box2DSprite.setUserDataAccessor(new Function<Box2DSprite, Object>() {
 			@Override
 			public Box2DSprite apply(Object arg) {
