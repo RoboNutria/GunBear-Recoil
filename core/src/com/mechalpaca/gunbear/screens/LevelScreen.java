@@ -34,14 +34,14 @@ public class LevelScreen implements Screen {
 		InputSystem inputSystem = new InputSystem();
 		GunSystem gunSystem = new GunSystem();
 		BulletSystem bulletSystem = new BulletSystem();
-		RenderSystem renderSystem = new RenderSystem();
-		renderSystem.world = physicsSystem.world;
-		LevelCycleSystem levelCycleSystem = new LevelCycleSystem();
 		EnemySpawnerSystem enemySpawnerSystem = new EnemySpawnerSystem();
 		MovementSystem movementSystem = new MovementSystem();
 		CollisionSystem collisionSystem = new CollisionSystem();
 		EnemySystem enemySystem = new EnemySystem();
+		RenderSystem renderSystem = new RenderSystem();
+		LevelCycleSystem levelCycleSystem = new LevelCycleSystem();
 
+		renderSystem.world = physicsSystem.world;
 		physicsSystem.world.setContactListener(collisionSystem);
 
 		// add the systems (order matters)
@@ -50,12 +50,12 @@ public class LevelScreen implements Screen {
 		engine.addSystem(inputSystem);
 		engine.addSystem(gunSystem);
 		engine.addSystem(bulletSystem);
-		engine.addSystem(renderSystem);
-		engine.addSystem(levelCycleSystem);
 		engine.addSystem(enemySpawnerSystem);
 		engine.addSystem(movementSystem);
 		engine.addSystem(collisionSystem);
 		engine.addSystem(enemySystem);
+		engine.addSystem(renderSystem);
+		engine.addSystem(levelCycleSystem);
 
 		// add entity listeners
 		Family bodyFamily = Family.all(BodyComponent.class).get();
@@ -73,12 +73,6 @@ public class LevelScreen implements Screen {
 		renderSystem.hud = hud;
 		levelCycleSystem.hud = hud;
 		playerSystem.hud = hud;
-
-		// load shaders
-		loadShaders();
-	}
-
-	private void loadShaders() {
 	}
 
 	@Override

@@ -2,6 +2,7 @@ package com.mechalpaca.gunbear;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.mechalpaca.gunbear.components.Box2DSpriteComponent;
 import com.mechalpaca.gunbear.screens.LevelScreen;
 import com.mechalpaca.gunbear.utils.Assets;
@@ -45,14 +46,17 @@ public class GunBearRecoil extends Game {
 
 	@Override
 	public void create () {
+		// load and compile shaders
+		//Assets.loadShader(GREENFLASH_GLSL, PASSTHROUGH_VERTEX, GREENFLASH_FRAGMENT);
+		//Assets.loadShader(GREENFLASH_GLSL, PASSTHROUGH_VERTEX, GREENFLASH_FRAGMENT);
+		ShaderProgram.pedantic = false;
+		// in webgl they might not load so fast so this is for safety
+		while(!Assets.loadShader(TVDISTORTION_GLSL, PASSTHROUGH_VERTEX, TVDISTORTION_FRAGMENT).isCompiled())
+
 		// load assets and shader programs, set user data accessor for dermetfan's box2d sprite cuz we want components
 		Assets.loadAtlas(GunBearRecoil.SPRITE_ATLAS_FILE, true);
 		Assets.loadTexture(GunBearRecoil.DARK_BLUE_TEXTURE);
 
-		// load and compile shaders
-		//Assets.loadShader(GREENFLASH_GLSL, PASSTHROUGH_VERTEX, GREENFLASH_FRAGMENT);
-		//Assets.loadShader(GREENFLASH_GLSL, PASSTHROUGH_VERTEX, GREENFLASH_FRAGMENT);
-		Assets.loadShader(TVDISTORTION2_GLSL, PASSTHROUGH_VERTEX, TVDISTORTION2_FRAGMENT);
 
 		Assets.loadMusic(GAME_MUSIC_FILE);
 		Assets.playMusic(GAME_MUSIC_FILE);

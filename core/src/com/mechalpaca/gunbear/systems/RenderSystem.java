@@ -45,7 +45,7 @@ public class RenderSystem extends EntitySystem {
     private Box2DDebugRenderer debugRenderer;
     private TextureRegion starsBack;
     private final Texture backTexture;
-    private ShaderProgram tvdistortionShader;
+    private ShaderProgram tvDistortionShader;
 
     public World world;
     public Hud hud;
@@ -55,6 +55,7 @@ public class RenderSystem extends EntitySystem {
     @Override
     public void addedToEngine(Engine engine) {
         sprites = engine.getEntitiesFor(Family.all(Box2DSpriteComponent.class, BodyComponent.class).get());
+        tvDistortionShader = Assets.getShader(GunBearRecoil.TVDISTORTION_GLSL);
     }
 
     public RenderSystem() {
@@ -62,8 +63,6 @@ public class RenderSystem extends EntitySystem {
         worldView = new FitViewport(V_WIDTH, V_HEIGHT);
         worldCamera = (OrthographicCamera) worldView.getCamera();
         starsBack = Assets.loadAtlas(GunBearRecoil.SPRITE_ATLAS_FILE).findRegion(GunBearRecoil.STARS_REGION);
-        ShaderProgram.pedantic = false;
-        tvdistortionShader = Assets.getShader(GunBearRecoil.TVDISTORTION2_GLSL);
         backTexture = Assets.getTexture(GunBearRecoil.DARK_BLUE_TEXTURE);
         if(DEBUG_MODE) debugRenderer = new Box2DDebugRenderer();
     }
@@ -76,11 +75,9 @@ public class RenderSystem extends EntitySystem {
         worldCamera.update();
         worldView.apply();
         batch.setProjectionMatrix(worldCamera.combined);
-        batch.begin();
         renderBackgrounds(deltaTime);
         renderEntities(deltaTime);
         renderHud(deltaTime);
-        batch.end();
         if(DEBUG_MODE) debugRenderer.render(world, worldCamera.combined);
     }
 
@@ -95,6 +92,7 @@ public class RenderSystem extends EntitySystem {
     }
 
     private void renderEntities(float deltaTime) {
+        batch.begin();
         for (Entity entity : sprites) {
             Box2DSprite b2s = b2sm.get(entity).box2DSprite;
             Body b = bcm.get(entity).body;
@@ -105,20 +103,25 @@ public class RenderSystem extends EntitySystem {
                 batch.setShader(mc.shaderProgram);
                 updateSpriteShader(mc, deltaTime);
             }
-            b2s.draw(batch, b);
             batch.setShader(null);
+            b2s.draw(batch, b);
         }
+        batch.end();
     }
 
     private void renderBackgrounds(float deltaTime) {
         updateBackgroundShader(deltaTime);
+        batch.begin();
         // color background
         batch.draw(backTexture, -worldView.getWorldWidth()/2, -worldView.getWorldHeight()/2,
                 worldView.getWorldWidth(), worldView.getWorldHeight());
         // stars background
+        batch.end();
         batch.setShader(null);
+        batch.begin();
         batch.draw(starsBack, -worldView.getWorldWidth()/2, -worldView.getWorldHeight()/2,
                 worldView.getWorldWidth(), worldView.getWorldHeight());
+        batch.end();
     }
 
     private void updateSpriteShader(MaterialComponent mc, float deltaTime) {
@@ -127,16 +130,14 @@ public class RenderSystem extends EntitySystem {
 
     private float count = 0;
     private void updateBackgroundShader(float deltaTime) {
+        if(!tvDistortionShader.isCompiled()) return;
         count += deltaTime;
-        Vector2 pos = new Vector2();
-        if(playerBody != null) pos = playerBody.getPosition();
-        // TODO: Something (?)
-        tvdistortionShader.begin();
-        tvdistortionShader.setUniformf("resolution", new Vector2(64, 64));
-        tvdistortionShader.setUniformf("time", count);
-        tvdistortionShader.setUniformf("mouse", pos);
-        tvdistortionShader.end();
-        batch.setShader(tvdistortionShader);
+        backTexture.bind();
+        starsBack.getTexture().bind();
+        tvDistortionShader.begin();
+        tvDistortionShader.setUniformf("time", count);
+        tvDistortionShader.end();
+        batch.setShader(tvDistortionShader);
     }
 
     public void resize(int width, int height) {

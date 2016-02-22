@@ -1,10 +1,14 @@
 #ifdef GL_ES
-precision mediump float;
+precision highp float;
 #endif
 
-uniform float time;
-uniform vec2 mouse;
 uniform vec2 resolution;
+uniform float time;
+
+varying vec4 v_color;
+varying vec2 v_texCoord0;
+
+uniform sampler2D u_sampler2D;
 
 // Hash without Sine
 // https://www.shadertoy.com/view/4djSRW
@@ -22,6 +26,6 @@ void main( void )
 {
 	vec2 uv = (gl_FragCoord.xy + time);
 	uv = vec2(atan(uv.x, uv.y), length(uv));
-	gl_FragColor = vec4(hash12(uv));
-	gl_FragColor = gl_FragColor*0.4f;
+	vec4 ape = vec4(hash12(uv))*0.4f;
+	gl_FragColor = vec4(v_texCoord0, 0.0, 1.0)*ape;
 }
