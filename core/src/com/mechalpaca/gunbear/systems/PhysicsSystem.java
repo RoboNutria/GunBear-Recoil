@@ -15,7 +15,6 @@ public class PhysicsSystem extends EntitySystem {
 
     public World world;
     public Vector2 gravity = new Vector2(0, 0);
-    private float accumulator;
 
     public PhysicsSystem() {
         world = new World(gravity, true);
@@ -23,13 +22,7 @@ public class PhysicsSystem extends EntitySystem {
 
     @Override
     public void update(float deltaTime) {
-		deltaTime = deltaTime * GameConfig.SPEED_UP;
-        float frameTime = Math.min(deltaTime, 0.25f);
-        accumulator += frameTime;
-        while (accumulator >= GameConfig.GAME_STEP) {
-            world.step(GAME_STEP, VEL_ITER, POS_ITER);
-            accumulator -= GameConfig.GAME_STEP;
-        }
+        world.step(GAME_STEP, VEL_ITER, POS_ITER);
     }
 
     @Override

@@ -1,15 +1,14 @@
 package com.mechalpaca.gunbear;
 
 import com.badlogic.gdx.Game;
-import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.mechalpaca.gunbear.components.Box2DSpriteComponent;
 import com.mechalpaca.gunbear.screens.LevelScreen;
 import com.mechalpaca.gunbear.utils.Assets;
+import com.mechalpaca.gunbear.utils.shaders.ShaderManager;
 import net.dermetfan.gdx.graphics.g2d.Box2DSprite;
 import net.dermetfan.utils.Function;
-
-import java.rmi.UnexpectedException;
 
 public class GunBearRecoil extends Game {
 	public static final String SPRITE_ATLAS_FILE = "sprites.atlas";
@@ -22,40 +21,30 @@ public class GunBearRecoil extends Game {
 	private static final String GAME_MUSIC_FILE = "merry-dance-psg.ogg";
 
 	// shader programs
-	public static final String PASSTHROUGH_VERTEX = "shaders/passthrough.vsh";
+	public static final String PASSTHROUGH_VERTEX = "passthrough.vsh";
 
 	public static final String GRAYSCALE_GLSL = "grayscaleGLSL";
-	public static final String GRAYSCALE_VERTEX = "shaders/grayscale.vsh";
-	public static final String GRAYSCALE_FRAGMENT = "shaders/grayscale.fsh";
+	public static final String GRAYSCALE_VERTEX = "grayscale.vsh";
+	public static final String GRAYSCALE_FRAGMENT = "grayscale.fsh";
 
 	public static final String APESHIT_GLSL = "apeshitGLSL";
-	public static final String APESHIT_FRAGMENT = "shaders/apeshit.fsh";
+	public static final String APESHIT_FRAGMENT = "apeshit.fsh";
 
-	public static final String EARTHQUAKE_GLSL = "earthquakeGLSL";
-	public static final String EARTHQUAKE_VERTEX = "shaders/earthquake.vsh";
-	public static final String EARTHQUAKE_FRAGMENT = "shaders/earthquake.fsh";
-
-	public static final String GREENFLASH_GLSL = "greenflashGLSL";
-	public static final String GREENFLASH_FRAGMENT = "shaders/green-flash.fsh";
-
-	public static final String TVDISTORTION_GLSL = "tvDistortionGLSL";
-	public static final String TVDISTORTION_FRAGMENT = "shaders/tvdistortion.fsh";
-
-	public static final String TVDISTORTION2_GLSL = "tvDistortion2GLSL";
-	public static final String TVDISTORTION2_FRAGMENT = "shaders/tvdistortion2.fsh";
+	public static ShaderManager sm;
+	public static AssetManager am;
 
 	@Override
 	public void create () {
-		// load and compile shaders
-		//Assets.loadShader(GREENFLASH_GLSL, PASSTHROUGH_VERTEX, GREENFLASH_FRAGMENT);
-		//Assets.loadShader(GREENFLASH_GLSL, PASSTHROUGH_VERTEX, GREENFLASH_FRAGMENT);
-		ShaderProgram.pedantic = false;
-		// in webgl they might not load so fast so this is for safety
-		while(!Assets.loadShader(TVDISTORTION_GLSL, PASSTHROUGH_VERTEX, TVDISTORTION_FRAGMENT).isCompiled())
-
 		// load assets and shader programs, set user data accessor for dermetfan's box2d sprite cuz we want components
+		am = new AssetManager();
 		Assets.loadAtlas(GunBearRecoil.SPRITE_ATLAS_FILE, true);
 		Assets.loadTexture(GunBearRecoil.DARK_BLUE_TEXTURE);
+
+		// load shaders
+		ShaderProgram.pedantic = false;
+		sm = new ShaderManager("shaders", am);
+		sm.add(APESHIT_GLSL, PASSTHROUGH_VERTEX, APESHIT_FRAGMENT);
+		am.finishLoading();
 
 
 		Assets.loadMusic(GAME_MUSIC_FILE);
@@ -74,5 +63,8 @@ public class GunBearRecoil extends Game {
 	public void dispose() {
 		super.dispose();
 		Assets.dispose();
+		sm.dispose();
+		am.dispose();
 	}
+
 }

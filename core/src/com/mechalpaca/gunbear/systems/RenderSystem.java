@@ -45,7 +45,6 @@ public class RenderSystem extends EntitySystem {
     private Box2DDebugRenderer debugRenderer;
     private TextureRegion starsBack;
     private final Texture backTexture;
-    private ShaderProgram tvDistortionShader;
 
     public World world;
     public Hud hud;
@@ -55,7 +54,6 @@ public class RenderSystem extends EntitySystem {
     @Override
     public void addedToEngine(Engine engine) {
         sprites = engine.getEntitiesFor(Family.all(Box2DSpriteComponent.class, BodyComponent.class).get());
-        tvDistortionShader = Assets.getShader(GunBearRecoil.TVDISTORTION_GLSL);
     }
 
     public RenderSystem() {
@@ -130,14 +128,14 @@ public class RenderSystem extends EntitySystem {
 
     private float count = 0;
     private void updateBackgroundShader(float deltaTime) {
-        if(!tvDistortionShader.isCompiled()) return;
         count += deltaTime;
         backTexture.bind();
         starsBack.getTexture().bind();
-        tvDistortionShader.begin();
-        tvDistortionShader.setUniformf("time", count);
-        tvDistortionShader.end();
-        batch.setShader(tvDistortionShader);
+        GunBearRecoil.sm.begin(GunBearRecoil.APESHIT_GLSL);
+        GunBearRecoil.sm.setUniformf("time", count);
+        GunBearRecoil.sm.setUniformf("resolution", 320, 240);
+        GunBearRecoil.sm.end();
+        batch.setShader(GunBearRecoil.sm.get(GunBearRecoil.APESHIT_GLSL));
     }
 
     public void resize(int width, int height) {

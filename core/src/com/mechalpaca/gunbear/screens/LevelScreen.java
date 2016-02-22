@@ -77,7 +77,13 @@ public class LevelScreen implements Screen {
 
 	@Override
 	public void render(float delta) {
-		engine.update(delta);
+		float deltaTime = delta * GameConfig.SPEED_UP;
+		float frameTime = Math.min(deltaTime, 0.25f);
+		accumulator += frameTime;
+		while (accumulator >= GameConfig.GAME_STEP) {
+			engine.update(GameConfig.GAME_STEP);
+			accumulator -= GameConfig.GAME_STEP;
+		}
 		hud.stage.act(delta);
 	}
 
