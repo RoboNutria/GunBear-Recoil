@@ -31,7 +31,8 @@ public class GunSystem extends EntitySystem {
     	for (Entity entity : gunWieldersEntities) {
     		BodyComponent bc = bm.get(entity);
     		GunComponent gc = gm.get(entity);
-    		
+			gc.waitTime = 0.15f;
+
     		gc.shotTimer += deltaTime;
     		if(!gc.readyToFire && gc.shotTimer >= gc.waitTime) gc.readyToFire = true;
     		if(gc.readyToFire) {

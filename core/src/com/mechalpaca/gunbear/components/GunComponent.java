@@ -14,7 +14,7 @@ public class GunComponent implements Component {
 	public int hitPower = 1;
 	public float bulletSpeed = 5f;
 	public float shotTimer = 0;
-	public float waitTime; // min time between shots
+	public float waitTime = 0.25f; // min time between shots
 	public boolean readyToFire = true;
 	public boolean playerWantsToFire = false;
 }
