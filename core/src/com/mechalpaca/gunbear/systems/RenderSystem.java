@@ -3,10 +3,7 @@ package com.mechalpaca.gunbear.systems;
 import com.badlogic.ashley.core.*;
 import com.badlogic.ashley.utils.ImmutableArray;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
@@ -23,6 +20,7 @@ import com.mechalpaca.gunbear.components.MaterialComponent;
 import com.mechalpaca.gunbear.components.PlayerComponent;
 import com.mechalpaca.gunbear.gui.Hud;
 import com.mechalpaca.gunbear.utils.Assets;
+import net.dermetfan.gdx.assets.AnnotationAssetManager;
 import net.dermetfan.gdx.graphics.g2d.Box2DSprite;
 
 import static com.mechalpaca.gunbear.GameConfig.*;
@@ -50,6 +48,7 @@ public class RenderSystem extends EntitySystem {
     public Hud hud;
 
     public Color color = new Color(0, 0, 0.08f, 1);
+    private FPSLogger fpsLogger = new FPSLogger();
 
     @Override
     public void addedToEngine(Engine engine) {
@@ -69,6 +68,8 @@ public class RenderSystem extends EntitySystem {
     public void update(float deltaTime) {
         Gdx.gl.glClearColor(color.r, color.g, color.b, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+        fpsLogger.log();
 
         worldCamera.update();
         worldView.apply();
@@ -128,14 +129,13 @@ public class RenderSystem extends EntitySystem {
 
     private float count = 0;
     private void updateBackgroundShader(float deltaTime) {
-        count += deltaTime;
-        backTexture.bind();
-        starsBack.getTexture().bind();
-        GunBearRecoil.sm.begin(GunBearRecoil.APESHIT_GLSL);
-        GunBearRecoil.sm.setUniformf("time", count);
-        GunBearRecoil.sm.setUniformf("resolution", 320, 240);
-        GunBearRecoil.sm.end();
-        batch.setShader(GunBearRecoil.sm.get(GunBearRecoil.APESHIT_GLSL));
+        batch.setShader(GunBearRecoil.sm.get(GunBearRecoil.SCANLINES));
+//        count += deltaTime;
+//        GunBearRecoil.sm.get(GunBearRecoil.APESHIT).begin();
+//        GunBearRecoil.sm.get(GunBearRecoil.APESHIT).setUniformf("time", count);
+//        GunBearRecoil.sm.get(GunBearRecoil.APESHIT).setUniformf("resolution", 320, 240);
+//        GunBearRecoil.sm.get(GunBearRecoil.APESHIT).end();
+//        batch.setShader(GunBearRecoil.sm.get(GunBearRecoil.APESHIT));
     }
 
     public void resize(int width, int height) {

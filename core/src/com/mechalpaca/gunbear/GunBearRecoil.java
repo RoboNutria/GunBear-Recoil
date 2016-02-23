@@ -21,34 +21,36 @@ public class GunBearRecoil extends Game {
 	private static final String GAME_MUSIC_FILE = "merry-dance-psg.ogg";
 
 	// shader programs
-	public static final String PASSTHROUGH_VERTEX = "passthrough.vsh";
+	public static final String PASSTHROUGH_VERTEX = "passthrough.vert";
 
-	public static final String GRAYSCALE_GLSL = "grayscaleGLSL";
+	public static final String GRAYSCALE = "grayscale";
 	public static final String GRAYSCALE_VERTEX = "grayscale.vsh";
 	public static final String GRAYSCALE_FRAGMENT = "grayscale.fsh";
 
-	public static final String APESHIT_GLSL = "apeshitGLSL";
+	public static final String APESHIT = "apeshit";
 	public static final String APESHIT_FRAGMENT = "apeshit.fsh";
+
+	public static final String SCANLINES = "scanlines";
+	public static final String SCANLINES_FRAGMENT = "scanlines.frag";
 
 	public static ShaderManager sm;
 	public static AssetManager am;
 
 	@Override
 	public void create () {
-		// load assets and shader programs, set user data accessor for dermetfan's box2d sprite cuz we want components
+		// load assets
 		am = new AssetManager();
 		Assets.loadAtlas(GunBearRecoil.SPRITE_ATLAS_FILE, true);
 		Assets.loadTexture(GunBearRecoil.DARK_BLUE_TEXTURE);
+		Assets.loadMusic(GAME_MUSIC_FILE);
+		Assets.playMusic(GAME_MUSIC_FILE);
 
 		// load shaders
 		ShaderProgram.pedantic = false;
 		sm = new ShaderManager("shaders", am);
-		sm.add(APESHIT_GLSL, PASSTHROUGH_VERTEX, APESHIT_FRAGMENT);
+		sm.add(SCANLINES, PASSTHROUGH_VERTEX, SCANLINES_FRAGMENT);
 		am.finishLoading();
 
-
-		Assets.loadMusic(GAME_MUSIC_FILE);
-		Assets.playMusic(GAME_MUSIC_FILE);
 		Box2DSprite.setUserDataAccessor(new Function<Box2DSprite, Object>() {
 			@Override
 			public Box2DSprite apply(Object arg) {
