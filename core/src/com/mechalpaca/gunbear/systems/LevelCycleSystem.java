@@ -9,6 +9,8 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mechalpaca.gunbear.GameConfig;
 import com.mechalpaca.gunbear.components.BulletComponent;
 import com.mechalpaca.gunbear.components.EnemySpawnerComponent;
+import com.mechalpaca.gunbear.components.Level;
+import com.mechalpaca.gunbear.factories.LevelFactory;
 import com.mechalpaca.gunbear.gui.Hud;
 
 /**
@@ -21,6 +23,7 @@ public class LevelCycleSystem extends EntitySystem {
     public static final int MAX_LEVEL = 999;
     public static boolean SPEED_UP_MODE = true;
     public int currentLevel = 1;
+    private Level level;
 
     // Timers
     private float spawnTimer = 0;
@@ -38,6 +41,7 @@ public class LevelCycleSystem extends EntitySystem {
     public void addedToEngine(Engine engine) {
         RenderSystem renderSystem = engine.getSystem(RenderSystem.class);
         worldView = renderSystem.worldView;
+        level = LevelFactory.getLevel(currentLevel, hud.tensionBar);
     }
 
     @Override
@@ -63,14 +67,14 @@ public class LevelCycleSystem extends EntitySystem {
     }
 
     private void updateLevel(float deltaTime) {
+        deltaTime = deltaTime * GameConfig.SPEED_UP;
         spawnTimer += deltaTime;
         if(spawnTimer >= spawnDelay) {
             spawnTimer = 0;
             createSpawn = true;
         }
         if(SPEED_UP_MODE) {
-            float deltaMul = hud.tensionBar.getPercent() + 1;
-            GameConfig.SPEED_UP = deltaMul;
+            GameConfig.SPEED_UP = 1+(level.deltaMulPercent * hud.tensionBar.getPercent());
         }
     }
 
@@ -101,10 +105,10 @@ public class LevelCycleSystem extends EntitySystem {
                 esc.pointB = new Vector2(-worldView.getWorldWidth()/2f, (-worldView.getWorldHeight()/2f)+0.02f);
             }
         }
-        esc.lifeSpan = -1;
-        esc.spawnDelay = 0.5f;
-        esc.enemiesToSpawn = 5;
-        esc.enemySpeed = 0.5f;
+        esc.lifeSpan = level.spawnerLifeSpan;
+        esc.spawnDelay = level.enemiesSpawnDelay;
+        esc.enemiesToSpawn = level.getEnemiesToSpawn();
+        esc.enemySpeed = level.enemySpeed;
         return esc;
     }
 

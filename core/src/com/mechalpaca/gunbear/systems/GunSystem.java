@@ -6,6 +6,7 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.utils.ImmutableArray;
+import com.mechalpaca.gunbear.GameConfig;
 import com.mechalpaca.gunbear.components.BodyComponent;
 import com.mechalpaca.gunbear.components.GunComponent;
 import com.mechalpaca.gunbear.components.PlayerComponent;
@@ -28,6 +29,7 @@ public class GunSystem extends EntitySystem {
     
     @Override
     public void update(float deltaTime) {
+		deltaTime = deltaTime * GameConfig.SPEED_UP;
     	for (Entity entity : gunWieldersEntities) {
     		BodyComponent bc = bm.get(entity);
     		GunComponent gc = gm.get(entity);

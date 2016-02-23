@@ -47,7 +47,7 @@ public class EntityFactory {
         gc.waitTime = 0.25f;
         gc.hitPower = 1;
         gc.bulletSpeed = 2f;
-        gc.recoilPower = 0.35f;
+        gc.recoilPower = 0.15f;
 
         PlayerComponent pc = new PlayerComponent();
         pc.speed = 5f;
@@ -165,6 +165,11 @@ public class EntityFactory {
             e.add(bfc);
         }
 
+        MaterialComponent mc = new MaterialComponent();
+        mc.shaderProgram = GunBearRecoil.sm.get(GunBearRecoil.WHITE);
+        mc.run = false;
+
+        e.add(mc);
         e.add(b2sc);
         e.add(ec);
         e.add(bc);

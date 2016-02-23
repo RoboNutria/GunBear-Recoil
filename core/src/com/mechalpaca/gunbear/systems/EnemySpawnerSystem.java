@@ -2,6 +2,7 @@ package com.mechalpaca.gunbear.systems;
 
 import com.badlogic.ashley.core.*;
 import com.badlogic.ashley.utils.ImmutableArray;
+import com.mechalpaca.gunbear.GameConfig;
 import com.mechalpaca.gunbear.components.BodyComponent;
 import com.mechalpaca.gunbear.components.EnemySpawnerComponent;
 import com.mechalpaca.gunbear.components.PlayerComponent;
@@ -20,6 +21,7 @@ public class EnemySpawnerSystem extends EntitySystem {
     private ComponentMapper<PlayerComponent> pc = ComponentMapper.getFor(PlayerComponent.class);
     private ComponentMapper<BodyComponent> bc = ComponentMapper.getFor(BodyComponent.class);
     private BodyComponent playerBodyComponent;
+    private float accumulator;
 
     @Override
     public void addedToEngine(Engine engine) {

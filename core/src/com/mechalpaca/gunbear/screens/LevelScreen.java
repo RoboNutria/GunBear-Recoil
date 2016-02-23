@@ -55,6 +55,13 @@ public class LevelScreen implements Screen {
 		engine.addSystem(collisionSystem);
 		engine.addSystem(enemySystem);
 		engine.addSystem(renderSystem);
+
+		hud = new Hud();
+		hud.createPlayerCredits();
+		hud.createTensionBar();
+		hud.createHPBar();
+		levelCycleSystem.hud = hud;
+
 		engine.addSystem(levelCycleSystem);
 
 		// add entity listeners
@@ -66,12 +73,7 @@ public class LevelScreen implements Screen {
 		engine.addEntity(EntityFactory.createGunBear(world, 0, 0, engine.getSystem(RenderSystem.class).worldView));
 
 
-		hud = new Hud();
-		hud.createPlayerCredits();
-		hud.createTensionBar();
-		hud.createHPBar();
 		renderSystem.hud = hud;
-		levelCycleSystem.hud = hud;
 		playerSystem.hud = hud;
 	}
 

@@ -102,8 +102,8 @@ public class RenderSystem extends EntitySystem {
                 batch.setShader(mc.shaderProgram);
                 updateSpriteShader(mc, deltaTime);
             }
-            batch.setShader(null);
             b2s.draw(batch, b);
+            batch.setShader(null);
         }
         batch.end();
     }
@@ -130,12 +130,6 @@ public class RenderSystem extends EntitySystem {
     private float count = 0;
     private void updateBackgroundShader(float deltaTime) {
         batch.setShader(GunBearRecoil.sm.get(GunBearRecoil.SCANLINES));
-//        count += deltaTime;
-//        GunBearRecoil.sm.get(GunBearRecoil.APESHIT).begin();
-//        GunBearRecoil.sm.get(GunBearRecoil.APESHIT).setUniformf("time", count);
-//        GunBearRecoil.sm.get(GunBearRecoil.APESHIT).setUniformf("resolution", 320, 240);
-//        GunBearRecoil.sm.get(GunBearRecoil.APESHIT).end();
-//        batch.setShader(GunBearRecoil.sm.get(GunBearRecoil.APESHIT));
     }
 
     public void resize(int width, int height) {

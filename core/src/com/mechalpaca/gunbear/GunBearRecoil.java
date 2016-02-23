@@ -33,6 +33,13 @@ public class GunBearRecoil extends Game {
 	public static final String SCANLINES = "scanlines";
 	public static final String SCANLINES_FRAGMENT = "scanlines.frag";
 
+	public static final String WHITE = "white";
+	public static final String WHITE_FRAGMENT = "white.frag";
+
+	public static final String INVERT = "invert";
+	public static final String INVERT_VERTEX = "invert.vsh";
+	public static final String INVERT_FRAGMENT = "invert.fsh";
+
 	public static ShaderManager sm;
 	public static AssetManager am;
 
@@ -49,6 +56,8 @@ public class GunBearRecoil extends Game {
 		ShaderProgram.pedantic = false;
 		sm = new ShaderManager("shaders", am);
 		sm.add(SCANLINES, PASSTHROUGH_VERTEX, SCANLINES_FRAGMENT);
+		sm.add(WHITE, PASSTHROUGH_VERTEX, WHITE_FRAGMENT);
+		sm.add(INVERT, INVERT_VERTEX, INVERT_FRAGMENT);
 		am.finishLoading();
 
 		Box2DSprite.setUserDataAccessor(new Function<Box2DSprite, Object>() {
