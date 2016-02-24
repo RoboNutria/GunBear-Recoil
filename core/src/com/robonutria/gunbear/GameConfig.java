@@ -11,7 +11,7 @@ public class GameConfig {
 	public static final float V_WIDTH = 192/PPM;
 	public static final float V_HEIGHT = 128/PPM;
 	public static final int POS_ITER = 6, VEL_ITER = 2;
-	public static final boolean VSYNC_ENABLED = true;
+	public static final boolean VSYNC_ENABLED = false;
 	public static final boolean DEBUG_MODE = false;
 	
 	private GameConfig() {};

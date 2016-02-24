@@ -35,7 +35,6 @@ public class RenderSystem extends EntitySystem {
     private ComponentMapper<BodyComponent> bcm = ComponentMapper.getFor(BodyComponent.class);
     private ComponentMapper<MaterialComponent> mm = ComponentMapper.getFor(MaterialComponent.class);
     private ComponentMapper<PlayerComponent> pm = ComponentMapper.getFor(PlayerComponent.class);
-    private Body playerBody;
 
     private SpriteBatch batch;
     public Viewport worldView;
@@ -74,9 +73,11 @@ public class RenderSystem extends EntitySystem {
         worldCamera.update();
         worldView.apply();
         batch.setProjectionMatrix(worldCamera.combined);
+        batch.begin();
         renderBackgrounds(deltaTime);
         renderEntities(deltaTime);
         renderHud(deltaTime);
+        batch.end();
         if(DEBUG_MODE) debugRenderer.render(world, worldCamera.combined);
     }
 
@@ -91,12 +92,10 @@ public class RenderSystem extends EntitySystem {
     }
 
     private void renderEntities(float deltaTime) {
-        batch.begin();
         for (Entity entity : sprites) {
             Box2DSprite b2s = b2sm.get(entity).box2DSprite;
             Body b = bcm.get(entity).body;
             PlayerComponent pc = pm.get(entity);
-            if(pc != null) playerBody = b;
             MaterialComponent mc = mm.get(entity);
             if(mc != null && mc.run) {
                 batch.setShader(mc.shaderProgram);
@@ -105,22 +104,19 @@ public class RenderSystem extends EntitySystem {
             b2s.draw(batch, b);
             batch.setShader(null);
         }
-        batch.end();
     }
 
     private void renderBackgrounds(float deltaTime) {
         updateBackgroundShader(deltaTime);
-        batch.begin();
         // color background
+        batch.disableBlending();
         batch.draw(backTexture, -worldView.getWorldWidth()/2, -worldView.getWorldHeight()/2,
                 worldView.getWorldWidth(), worldView.getWorldHeight());
         // stars background
-        batch.end();
+        batch.enableBlending();
         batch.setShader(null);
-        batch.begin();
         batch.draw(starsBack, -worldView.getWorldWidth()/2, -worldView.getWorldHeight()/2,
                 worldView.getWorldWidth(), worldView.getWorldHeight());
-        batch.end();
     }
 
     private void updateSpriteShader(MaterialComponent mc, float deltaTime) {
