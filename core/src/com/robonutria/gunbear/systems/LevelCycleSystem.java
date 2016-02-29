@@ -5,6 +5,7 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.robonutria.gunbear.GameConfig;
 import com.robonutria.gunbear.components.BulletComponent;
@@ -41,7 +42,13 @@ public class LevelCycleSystem extends EntitySystem {
     public void addedToEngine(Engine engine) {
         RenderSystem renderSystem = engine.getSystem(RenderSystem.class);
         worldView = renderSystem.worldView;
+        changeLevel();
+    }
+
+    private void changeLevel() {
         level = LevelFactory.getLevel(currentLevel, hud.tensionBar);
+        parallelSpawns = level.parallelSpawns;
+        spawnDelay = level.delayBetweenSpawns;
     }
 
     @Override
@@ -97,12 +104,26 @@ public class LevelCycleSystem extends EntitySystem {
         esc.spawnType = getRandomSpawnType();
 
         if(esc.spawnType == EnemySpawnerComponent.SpawnType.RandomY) {
-            if(MathUtils.randomBoolean() == true) {
-                esc.pointA = new Vector2(worldView.getWorldWidth()/2f, (worldView.getWorldHeight()/2f)-0.02f);
-                esc.pointB = new Vector2(worldView.getWorldWidth()/2f, (-worldView.getWorldHeight()/2f)+0.02f);
+            if (MathUtils.randomBoolean() == true) {
+                esc.pointA = new Vector2(worldView.getWorldWidth() / 2f, (worldView.getWorldHeight() / 2f) - 0.02f);
+                esc.pointB = new Vector2(worldView.getWorldWidth() / 2f, (-worldView.getWorldHeight() / 2f) + 0.02f);
             } else {
-                esc.pointA = new Vector2(-worldView.getWorldWidth()/2f, (worldView.getWorldHeight()/2f)-0.02f);
-                esc.pointB = new Vector2(-worldView.getWorldWidth()/2f, (-worldView.getWorldHeight()/2f)+0.02f);
+                esc.pointA = new Vector2(-worldView.getWorldWidth() / 2f, (worldView.getWorldHeight() / 2f) - 0.02f);
+                esc.pointB = new Vector2(-worldView.getWorldWidth() / 2f, (-worldView.getWorldHeight() / 2f) + 0.02f);
+            }
+        } else if(esc.spawnType == EnemySpawnerComponent.SpawnType.RandomX) {
+            if (MathUtils.randomBoolean() == true) {
+                esc.pointA = new Vector2(-worldView.getWorldWidth() / 2f, (-worldView.getWorldHeight() / 2f) - 0.02f);
+                esc.pointB = new Vector2(worldView.getWorldWidth() / 2f, (-worldView.getWorldHeight() / 2f) + 0.02f);
+            } else {
+                esc.pointA = new Vector2(-worldView.getWorldWidth() / 2f, (worldView.getWorldHeight() / 2f) - 0.02f);
+                esc.pointB = new Vector2(worldView.getWorldWidth() / 2f, (worldView.getWorldHeight() / 2f) + 0.02f);
+            }
+        } else if (esc.spawnType == EnemySpawnerComponent.SpawnType.FixedY) {
+            if (MathUtils.randomBoolean() == true) {
+                esc.pointA = new Vector2(-worldView.getWorldWidth() / 2f, MathUtils.random(-worldView.getWorldHeight()/2f, worldView.getWorldHeight()/2f));
+            } else {
+                esc.pointA = new Vector2(worldView.getWorldWidth() / 2f, MathUtils.random(-worldView.getWorldHeight()/2f, worldView.getWorldHeight()/2f));
             }
         }
         esc.lifeSpan = level.spawnerLifeSpan;
@@ -113,8 +134,8 @@ public class LevelCycleSystem extends EntitySystem {
     }
 
     public EnemySpawnerComponent.SpawnType getRandomSpawnType() {
-        // TODO: Make it random not just RandomY
-        return EnemySpawnerComponent.SpawnType.RandomY;
+        int r = MathUtils.random(0, EnemySpawnerComponent.SpawnType.values().length-1);
+        return EnemySpawnerComponent.SpawnType.values()[r];
     }
 
     public static void notifyHit(BulletComponent bulletComponent, boolean enemyKilled) {

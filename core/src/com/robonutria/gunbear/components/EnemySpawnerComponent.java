@@ -9,10 +9,9 @@ import com.badlogic.gdx.math.Vector2;
 public class EnemySpawnerComponent implements Component {
 
     public static enum SpawnType {
-        FixedSpot, // Enemies would spawn from a specific position
+        FixedY, // Enemies would spawn from a specific position
         RandomX,
         RandomY,
-        RandomXY,
     }
 
     public static enum EnemyType {
@@ -44,7 +43,7 @@ public class EnemySpawnerComponent implements Component {
     public Vector2 getNextEnemyPos() {
         Vector2 p = null;
         switch (spawnType) {
-            case FixedSpot:
+            case FixedY:
                 p = pointA;
                 break;
             case RandomY:
@@ -52,9 +51,6 @@ public class EnemySpawnerComponent implements Component {
                 break;
             case RandomX:
                 p = new Vector2(MathUtils.random(pointA.x, pointB.x), pointA.y);
-                break;
-            case RandomXY:
-                p = new Vector2(MathUtils.random(pointA.x, pointB.x), MathUtils.random(pointA.y, pointB.y));
                 break;
             default:
                 break;

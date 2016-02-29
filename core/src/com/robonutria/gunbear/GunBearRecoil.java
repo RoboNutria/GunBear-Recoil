@@ -51,6 +51,8 @@ public class GunBearRecoil extends Game {
 		Assets.loadTexture(GunBearRecoil.DARK_BLUE_TEXTURE);
 		Assets.loadMusic(GAME_MUSIC_FILE);
 		Assets.playMusic(GAME_MUSIC_FILE);
+		Assets.loadTexture("new/gunbear.png");
+		Assets.loadTexture("new/pulpo.png");
 
 		// load shaders
 		ShaderProgram.pedantic = false;

@@ -12,6 +12,8 @@ public class Level {
     public int minEnemiesToSpawn = 1;
     public int maxEnemiesToSpawn = 1;
     public int spawnerLifeSpan = -1;
+    public int parallelSpawns = 1;
+    public float delayBetweenSpawns = 0.5f;
 
     public int getEnemiesToSpawn() {
         return MathUtils.random(minEnemiesToSpawn, maxEnemiesToSpawn);

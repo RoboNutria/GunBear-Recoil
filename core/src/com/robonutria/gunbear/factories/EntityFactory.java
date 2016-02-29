@@ -60,7 +60,8 @@ public class EntityFactory {
         Box2DSpriteComponent bsc = new Box2DSpriteComponent();
         BodyComponent bc = new BodyComponent();
 
-        bsc.box2DSprite = new Box2DSprite(playerRegion);
+        //bsc.box2DSprite = new Box2DSprite(playerRegion);
+        bsc.box2DSprite = new Box2DSprite(new TextureRegion(Assets.getTexture("new/gunbear.png")));
         bc.body = Box2DFactory.createBody(world, PPM, BodyDef.BodyType.DynamicBody, new Vector2(x, y), 0, 4f);
         bc.body.setFixedRotation(true);
         Fixture fixture = Box2DFactory.makeCircleFixture(PPM, pc.radius, 1, 0, bc.body);
@@ -139,22 +140,23 @@ public class EntityFactory {
 
 
         Box2DSpriteComponent b2sc = new Box2DSpriteComponent();
-        b2sc.box2DSprite = new Box2DSprite(enemyRegions.first());
+        //b2sc.box2DSprite = new Box2DSprite(enemyRegions.first());
+        b2sc.box2DSprite = new Box2DSprite(new TextureRegion(Assets.getTexture("new/pulpo.png")));
         fixture.setUserData(b2sc);
 
         if(esc.enemyMovementType == EnemySpawnerComponent.EnemyMovementType.LinearVelocity) {
+            Viewport bounds = LevelScreen.engine.getSystem(RenderSystem.class).worldView;
             LinearVelocityComponent lvc = new LinearVelocityComponent();
             lvc.speed = esc.enemySpeed;
+            // set the direction of the enemy
             float xDir = 0;
             float yDir = 0;
-            if(esc.spawnType == EnemySpawnerComponent.SpawnType.RandomY) {
+            if(esc.spawnType == EnemySpawnerComponent.SpawnType.RandomY || esc.spawnType == EnemySpawnerComponent.SpawnType.FixedY) {
                 if(pos.x < 0) xDir = 1;
                 else if(pos.x > 0) xDir = -1;
             } else if(esc.spawnType == EnemySpawnerComponent.SpawnType.RandomX) {
                 if(pos.y < 0) yDir = 1;
                 else if(pos.y > 0) yDir = -1;
-            } else if(esc.spawnType == EnemySpawnerComponent.SpawnType.RandomXY) {
-                // TODO: RandomXY
             }
             lvc.direction = new Vector2(xDir, yDir);
             e.add(lvc);
