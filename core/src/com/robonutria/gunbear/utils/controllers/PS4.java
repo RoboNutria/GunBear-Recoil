@@ -1,4 +1,4 @@
-package com.robonutria.gunbear.utils;
+package com.robonutria.gunbear.utils.controllers;
 
 import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.controllers.PovDirection;

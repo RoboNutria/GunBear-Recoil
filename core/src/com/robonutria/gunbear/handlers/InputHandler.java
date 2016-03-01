@@ -9,7 +9,8 @@ import com.badlogic.gdx.controllers.Controllers;
 import com.badlogic.gdx.controllers.PovDirection;
 import com.badlogic.gdx.controllers.mappings.Xbox;
 import com.badlogic.gdx.math.Vector3;
-import com.robonutria.gunbear.utils.PS4;
+import com.robonutria.gunbear.utils.controllers.Generic;
+import com.robonutria.gunbear.utils.controllers.PS4;
 
 /**
  * Generic input handler with the purpose to handle all input (?)
@@ -129,13 +130,13 @@ public class InputHandler extends InputAdapter implements ControllerListener {
     public void connected(Controller controller) {
         HAS_JOYSTICK = true;
         setControllerType(controller);
-        controller = Controllers.getControllers().first();
+        this.controller = Controllers.getControllers().first();
     }
 
     @Override
     public void disconnected(Controller controller) {
         HAS_JOYSTICK = false;
-        controller = null;
+        this.controller = null;
     }
 
     @Override
@@ -152,13 +153,18 @@ public class InputHandler extends InputAdapter implements ControllerListener {
             } else if(buttonCode == Xbox.L_BUMPER || buttonCode == Xbox.R_BUMPER) {
                 actionB = true;
             }
+        } else if(controllerType == ControllerType.Generic) {
+            if(buttonCode == Generic.B || buttonCode == Generic.Y) {
+                actionA = true;
+            } else if(buttonCode == Generic.L || buttonCode == Generic.R) {
+                actionB = true;
+            }
         }
         return false;
     }
 
     @Override
     public boolean buttonUp(Controller controller, int buttonCode) {
-        System.out.println("release");
         if(controllerType == ControllerType.PS4) {
             if(buttonCode == PS4.BUTTON_CROSS || buttonCode == PS4.BUTTON_SQUARE) {
                 actionA = false;
@@ -171,13 +177,19 @@ public class InputHandler extends InputAdapter implements ControllerListener {
             } else if(buttonCode == Xbox.L_BUMPER || buttonCode == Xbox.R_BUMPER) {
                 actionB = false;
             }
+        } else if(controllerType == ControllerType.Generic) {
+            if(buttonCode == Generic.B || buttonCode == Generic.Y) {
+                actionA = false;
+            } else if(buttonCode == Generic.L || buttonCode == Generic.R) {
+                actionB = false;
+            }
         }
         return false;
     }
 
     @Override
     public boolean axisMoved(Controller controller, int axisCode, float value) {
-        if (controllerType == ControllerType.PS4) {
+        if (controllerType == ControllerType.PS4 || controllerType == ControllerType.Generic) {
             if (axisCode == 1) {
                 if(value > AXIS_DEADZONE || value < -AXIS_DEADZONE) {
                     // this using keyboard thing is to let controller and keyboard coexist peacfully
@@ -201,7 +213,7 @@ public class InputHandler extends InputAdapter implements ControllerListener {
             }
             return false;
         }
-        // TODO: Other controllers!
+        // TODO: Official Xbox drivers and Ouya (?)
 //        if(axisCode == Xbox.L_STICK_HORIZONTAL_AXIS) {
 //        } else if(axisCode == Xbox.L_STICK_VERTICAL_AXIS) {
 //            y = value;
@@ -211,36 +223,58 @@ public class InputHandler extends InputAdapter implements ControllerListener {
 
     @Override
     public boolean povMoved(Controller controller, int povCode, PovDirection value) {
-        // TODO: Dunno if this will work for ps4
-//        if(controller.getPov(povCode).equals(PS4.BUTTON_DPAD_UP)) {
-//            y = value.ordinal();
-//        } else if(controller.getPov(povCode).equals(PS4.BUTTON_DPAD_DOWN)) {
-//            y = -value.ordinal();
-//        } else if(controller.getPov(povCode).equals(PS4.BUTTON_DPAD_LEFT)) {
-//            System.out.println(value.ordinal());
-//            x = -value.ordinal();
-//        } else if(controller.getPov(povCode).equals(PS4.BUTTON_DPAD_RIGHT)) {
-//            System.out.println(value.ordinal());
-//            x = value.ordinal();
-//        }
         return false;
     }
 
     public void checkDpad() {
-        // TODO: For ps4, fucked up (?)
-//        if(controller == null) return;
-//        float axisA = controller.getAxis(0);
-//        float axisB = controller.getAxis(1);
-//        if(controllerType == ControllerType.PS4) {
-//            int ordinal = controller.getPov(0).ordinal();
-//            int up = PS4.BUTTON_DPAD_UP.ordinal();
-//            int down = PS4.BUTTON_DPAD_UP.ordinal();
-//            if(ordinal == up) {
-//                y = 1;
-//            } else {
-//                y = 0;
-//            }
-//        }
+        if(controller == null) return;
+        PovDirection dpadDir = controller.getPov(0);
+        if(dpadDir == PovDirection.center) {
+            float axisA = controller.getAxis(0);
+            float axisB = controller.getAxis(1);
+            if(axisA > AXIS_DEADZONE || axisA < -AXIS_DEADZONE) {
+                return;
+            }
+            if(axisB > AXIS_DEADZONE || axisB < -AXIS_DEADZONE) {
+                return;
+            }
+            if(!usingKeyboard) {
+                x = 0;
+                y = 0;
+            }
+            return;
+        }
+        usingKeyboard = false;
+        if(dpadDir == PovDirection.north) {
+            y = 1;
+        } else if(dpadDir == PovDirection.south){
+            y = -1;
+        } else {
+            y = 0;
+        }
+        if(dpadDir == PovDirection.west) {
+            x = -1;
+        } else if(dpadDir == PovDirection.east){
+            x = 1;
+        } else {
+            x = 0;
+        }
+        if (dpadDir == PovDirection.northWest) {
+            x = -1;
+            y = 1;
+        }
+        if(dpadDir == PovDirection.southEast) {
+            x = 1;
+            y = -1;
+        }
+        if(dpadDir == PovDirection.northEast) {
+            x = 1;
+            y = 1;
+        }
+        if(dpadDir == PovDirection.southWest) {
+            x = -1;
+            y = -1;
+        }
     }
 
     @Override
