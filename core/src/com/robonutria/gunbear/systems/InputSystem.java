@@ -3,7 +3,6 @@ package com.robonutria.gunbear.systems;
 import com.badlogic.ashley.core.*;
 import com.badlogic.ashley.utils.ImmutableArray;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.robonutria.gunbear.components.BodyComponent;
 import com.robonutria.gunbear.components.GunComponent;
@@ -33,6 +32,7 @@ public class InputSystem extends EntitySystem {
             PlayerComponent pc = pm.get(entity);
 
             if(pc.canMove) {
+                input.checkDpad(); // needed for detecting dpad release on joysticks
                 handleInputMovement(pc, bc);
                 handleDirectionChange(pc, bc);
             }
@@ -57,10 +57,9 @@ public class InputSystem extends EntitySystem {
         Vector2 vel = new Vector2();
         vel.x = input.x * pc.speed;
         vel.y = input.y * pc.speed;
-        if(vel.x != 0 && vel.y != 0) {
-            vel.x = MathUtils.floor((float) ((vel.x*Math.sqrt(2))/2));
-            vel.y = MathUtils.floor((float) ((vel.y*Math.sqrt(2))/2));
-        }
+        vel.nor();
+        vel.x = vel.x * pc.speed;
+        vel.y = vel.y * pc.speed;
         bc.body.setLinearVelocity(bc.body.getLinearVelocity().lerp(vel, pc.friction));
     }
 
